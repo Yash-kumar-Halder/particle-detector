@@ -1,9 +1,14 @@
 const r = require("raylib");
+const constant = require("../shared/constant");
+const { scanner } = require("../utils/scanner");
 
 
-function setup(windowWidth, windowHeight, title, fps) {
-    r.InitWindow(windowWidth, windowHeight, title);
-    r.SetTargetFPS(fps);
+let scannerX = 0;
+let deltaX = 1;
+
+function setup() {
+    r.InitWindow(constant.WINDOW_WIDTH, constant.WINDOW_HEIGHT, "Particle Detector");
+    r.SetTargetFPS(constant.FPS);
     return;
 }
 
@@ -12,14 +17,21 @@ function running() {
 }
 
 function draw() {
+
     r.BeginDrawing();
-    r.ClearBackground(r.WHITE);
-    r.DrawRectangle(10, 10, 100, 100, r.BLUE)
+    r.ClearBackground(r.BLACK);
+    scanner(scannerX);
     r.EndDrawing();
 }
 
 function update() {
-
+    if (scannerX <= 0) {
+        deltaX = 2;
+    }
+    if (scannerX >= constant.WINDOW_WIDTH - constant.SCANNER_WIDTH) {
+        deltaX = -deltaX;
+    }
+    scannerX = scannerX + deltaX;
 }
 
 
