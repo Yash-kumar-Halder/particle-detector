@@ -1,7 +1,7 @@
 const constant = require("../shared/constant")
 
-function isOverlapping(scannerX, particleX, particleWidth) {
-    return !(scannerX + constant.SCANNER_WIDTH < particleX || scannerX > particleX + particleWidth);
+function isOverlapping(scannerX, scannerWidth, particleX, particleWidth) {
+    return !(scannerX + scannerWidth < particleX || scannerX > particleX + particleWidth);
 }
 
 module.exports = {
