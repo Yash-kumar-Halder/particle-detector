@@ -2,9 +2,11 @@ const r = require("raylib");
 const constant = require("../shared/constant");
 const { scanner } = require("../utils/scanner");
 const { particle } = require("../utils/particle");
+const { isOverlapping } = require("./geometry");
 
 let scannerX = 0;
 let deltaX = 1;
+let scannerColor = r.WHITE;
 
 const PARTICLE_X = constant.WINDOW_WIDTH * 0.3;
 
@@ -23,7 +25,7 @@ function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
     particle(PARTICLE_X, 0);
-    scanner(scannerX);
+    scanner(scannerX, scannerColor);
     r.EndDrawing();
 }
 
@@ -35,6 +37,11 @@ function update() {
         deltaX = -deltaX;
     }
     scannerX = scannerX + deltaX;
+    if (isOverlapping(scannerX, PARTICLE_X)) {
+        scannerColor = r.RED;
+    } else {
+        scannerColor = r.WHITE;
+    }
 }
 
 
