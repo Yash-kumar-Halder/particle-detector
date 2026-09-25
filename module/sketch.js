@@ -1,10 +1,12 @@
 const r = require("raylib");
 const constant = require("../shared/constant");
 const { scanner } = require("../utils/scanner");
-
+const { particle } = require("../utils/particle");
 
 let scannerX = 0;
 let deltaX = 1;
+
+const PARTICLE_X = constant.WINDOW_WIDTH * 0.3;
 
 function setup() {
     r.InitWindow(constant.WINDOW_WIDTH, constant.WINDOW_HEIGHT, "Particle Detector");
@@ -20,6 +22,7 @@ function draw() {
 
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
+    particle(PARTICLE_X, 0);
     scanner(scannerX);
     r.EndDrawing();
 }
