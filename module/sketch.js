@@ -62,10 +62,8 @@ function updateDeltaX(currX, startX, endX, width, deltaX) {
 
 function getColor(scannerX, scannerWidth, particle1X, particle1Width, particle2X, particle2Width,) {
     if (isOverlapping(scannerX, scannerWidth, particle1X, particle1Width) || isOverlapping(scannerX, scannerWidth, particle2X, particle2Width)) {
-        // console.log("RED");
         return r.RED;
     } else {
-        // console.log("WHITE");
         return r.WHITE;
     }
 }
