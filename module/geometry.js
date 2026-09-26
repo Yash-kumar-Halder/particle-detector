@@ -1,4 +1,4 @@
-function isOverlapping(scannerX, scannerWidth, particleX, particleWidth) {
+function isColliding(scannerX, scannerWidth, particleX, particleWidth) {
     return !((scannerX + scannerWidth < particleX) || (scannerX > particleX + particleWidth));
 }
 
@@ -13,6 +13,6 @@ function updateDelta(currPos, boundStart, boundEnd, scannerSize, currDir) {
 }
 
 module.exports = {
-    isOverlapping,
+    isColliding,
     updateDelta
 };
