@@ -1,6 +1,4 @@
-const r = require("raylib");
 const sketch = require("./module/sketch");
-console.log(sketch);
 
 
 function loop() {
@@ -14,7 +12,7 @@ function main() {
     sketch.setup();
     loop();
     sketch.update();
-    sketch.teardown();
+    sketch.tearDown();
 }
 
 main();
