@@ -1,82 +1,185 @@
 const r = require("raylib");
 const constant = require("../shared/constant");
-const { hosizontalScanner, verticalScanner } = require("../utils/scanner");
-const { horizontalParticle, verticalParticle } = require("../utils/particle");
-const { isColliding, updateDelta } = require("./geometry");
+const detector = require("../utils/detector");
+const particle = require("../utils/particle");
 
-let horizontalScanner1X = 0;
-let horizontalScanner1Color = r.WHITE;
-let deltaX1 = 1;
+// Initialize Detectors
+const d1 = detector.init(
+  0,
+  0,
+  50,
+  constant.WINDOW_HEIGHT,
+  r.WHITE,
+  0,
+  constant.WINDOW_WIDTH / 2,
+  1,
+);
+const d2 = detector.init(
+  constant.WINDOW_WIDTH / 2,
+  0,
+  50,
+  constant.WINDOW_HEIGHT,
+  r.WHITE,
+  constant.WINDOW_WIDTH / 2,
+  constant.WINDOW_WIDTH,
+  3,
+);
+const d3 = detector.init(
+  0,
+  0,
+  constant.WINDOW_WIDTH,
+  50,
+  r.WHITE,
+  0,
+  constant.WINDOW_HEIGHT,
+  2,
+);
 
-let horizontalScanner2X = constant.WINDOW_WIDTH / 2;
-let horizontalScanner2Color = r.WHITE;
-let deltaX2 = 2;
-
-let verticalScanner1Y = 0;
-let verticalScanner1Color = r.WHITE;
-let deltaY1 = 3;
-
-const PARTICLE_1_X = constant.WINDOW_WIDTH * 0.3;
-const PARTICLE_2_X = constant.WINDOW_WIDTH * 0.7;
-const HORIZONTAL_PARTICAL_1_Y = constant.WINDOW_HEIGHT * 0.3;
+// Initialize Particles
+const p1 = particle.init(300, 0, 60, constant.WINDOW_HEIGHT, r.SKYBLUE);
+const p2 = particle.init(600, 0, 30, constant.WINDOW_HEIGHT, r.SKYBLUE);
+const p3 = particle.init(0, 300, constant.WINDOW_WIDTH, 30, r.SKYBLUE);
 
 function setup() {
-    r.InitWindow(constant.WINDOW_WIDTH, constant.WINDOW_HEIGHT, "Particle Detector",
-    );
-    r.SetTargetFPS(constant.FPS);
-    r.SetTraceLogLevel(r.LOG_NONE);
-    return;
+  r.SetTraceLogLevel(r.LOG_NONE);
+  r.InitWindow(
+    constant.WINDOW_WIDTH,
+    constant.WINDOW_HEIGHT,
+    "Particle Detector",
+  );
+  r.SetTargetFPS(constant.FPS);
+  return;
 }
 
 function running() {
-    return !r.WindowShouldClose();
+  return !r.WindowShouldClose();
+}
+
+function drawRange(elem) {
+  r.DrawRectangle(elem.currX, elem.currY, elem.width, elem.height, elem.color);
+}
+
+function isOverlapping(
+  detectorCurrPos,
+  detectorThikness,
+  perticleCurrPos,
+  perticleThikness,
+) {
+  const detectorEnd = detectorCurrPos + detectorThikness;
+  const particleEnd = perticleCurrPos + perticleThikness;
+
+  return !(detectorEnd < perticleCurrPos || particleEnd < detectorCurrPos);
+}
+
+function isParticleDetected(
+  detectorCurrPos,
+  detectorThikness,
+  perticle1CurrPos,
+  perticle1Thikness,
+  perticle2CurrPos,
+  perticle2Thikness,
+) {
+  return (
+    isOverlapping(
+      detectorCurrPos,
+      detectorThikness,
+      perticle1CurrPos,
+      perticle1Thikness,
+    ) ||
+    isOverlapping(
+      detectorCurrPos,
+      detectorThikness,
+      perticle2CurrPos,
+      perticle2Thikness,
+    )
+  );
 }
 
 function draw() {
-    r.BeginDrawing();
-    r.ClearBackground(r.BLACK);
+  r.BeginDrawing();
+  r.ClearBackground(r.BLACK);
 
-    horizontalParticle(PARTICLE_1_X, 0, constant.PARTICLE_1_WIDTH);
-    horizontalParticle(PARTICLE_2_X, 0, constant.PARTICLE_2_WIDTH);
+  // Particles
+  drawRange(p1);
+  drawRange(p2);
+  drawRange(p3);
 
-    hosizontalScanner(horizontalScanner1X, constant.SCANNER_1_WIDTH, horizontalScanner1Color);
-    hosizontalScanner(horizontalScanner2X, constant.SCANNER_2_WIDTH, horizontalScanner2Color);
+  // Detectors
+  drawRange(d1);
+  drawRange(d2);
+  drawRange(d3);
 
-    verticalParticle(0, HORIZONTAL_PARTICAL_1_Y, constant.HORIZONTAL_PERTICAL_1_HEIGHT);
-    verticalScanner(verticalScanner1Y, constant.VERTICAL_SCANNER_1_HEIGHT, verticalScanner1Color);
-
-    r.EndDrawing();
+  r.EndDrawing();
 }
 
 function update() {
-    deltaX1 = updateDelta(horizontalScanner1X, 0, constant.WINDOW_WIDTH / 2, constant.SCANNER_1_WIDTH, deltaX1,
-    );
-    deltaX2 = updateDelta(horizontalScanner2X, constant.WINDOW_WIDTH * 0.5, constant.WINDOW_WIDTH, constant.SCANNER_2_WIDTH, deltaX2,
-    );
-    deltaY1 = updateDelta(verticalScanner1Y, 0, constant.WINDOW_HEIGHT, constant.VERTICAL_SCANNER_1_HEIGHT, deltaY1,
-    );
+  // Updating velocity
+  d1.velocity = detector.updateVelocity(
+    d1.currX,
+    d1.width,
+    d1.startBound,
+    d1.endBound,
+    d1.velocity,
+  );
+  d2.velocity = detector.updateVelocity(
+    d2.currX,
+    d2.width,
+    d2.startBound,
+    d2.endBound,
+    d2.velocity,
+  );
+  d3.velocity = detector.updateVelocity(
+    d3.currY,
+    d3.height,
+    d3.startBound,
+    d3.endBound,
+    d3.velocity,
+  );
 
-    horizontalScanner1X = horizontalScanner1X + deltaX1;
-    horizontalScanner2X = horizontalScanner2X + deltaX2;
-    verticalScanner1Y = verticalScanner1Y + deltaY1;
+  // Updating Position
+  d1.currX += d1.velocity;
+  d2.currX += d2.velocity;
+  d3.currY += d3.velocity;
 
-    horizontalScanner1Color = getColor(isColliding(horizontalScanner1X, constant.SCANNER_1_WIDTH, PARTICLE_1_X, constant.PARTICLE_1_WIDTH) || isColliding(horizontalScanner1X, constant.SCANNER_1_WIDTH, PARTICLE_2_X, constant.PARTICLE_2_WIDTH));
-    horizontalScanner2Color = getColor(isColliding(horizontalScanner2X, constant.SCANNER_2_WIDTH, PARTICLE_1_X, constant.PARTICLE_1_WIDTH) || isColliding(horizontalScanner2X, constant.SCANNER_2_WIDTH, PARTICLE_2_X, constant.PARTICLE_2_WIDTH));
-    verticalScanner1Color = getColor(isColliding(verticalScanner1Y, constant.VERTICAL_SCANNER_1_HEIGHT, HORIZONTAL_PARTICAL_1_Y, constant.HORIZONTAL_PERTICAL_1_HEIGHT));
-}
+  d1.isDetected = isParticleDetected(
+    d1.currX,
+    d1.width,
+    p1.currX,
+    p1.width,
+    p2.currX,
+    p2.width,
+  );
+  d2.isDetected = isParticleDetected(
+    d2.currX,
+    d2.width,
+    p1.currX,
+    p1.width,
+    p2.currX,
+    p2.width,
+  );
+  d3.isDetected = isParticleDetected(
+    d3.currY,
+    d3.height,
+    p3.currY,
+    p3.height,
+    p3.currY,
+    p3.height,
+  );
 
-function getColor(isColliding) {
-    return isColliding ? r.RED : r.WHITE;
+  // Updating Color On Perticle Detect
+  d1.color = detector.getDetectorColor(d1.isDetected);
+  d2.color = detector.getDetectorColor(d2.isDetected);
+  d3.color = detector.getDetectorColor(d3.isDetected);
 }
 
 function tearDown() {
-    r.CloseWindow();
+  r.CloseWindow();
 }
 
 module.exports = {
-    setup,
-    running,
-    draw,
-    update,
-    tearDown,
+  setup,
+  running,
+  draw,
+  update,
+  tearDown,
 };
