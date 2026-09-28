@@ -62,35 +62,35 @@ function drawRange(elem) {
 function isOverlapping(
   detectorCurrPos,
   detectorThikness,
-  perticleCurrPos,
-  perticleThikness,
+  particleCurrPos,
+  particleThikness,
 ) {
   const detectorEnd = detectorCurrPos + detectorThikness;
-  const particleEnd = perticleCurrPos + perticleThikness;
+  const particleEnd = particleCurrPos + particleThikness;
 
-  return !(detectorEnd < perticleCurrPos || particleEnd < detectorCurrPos);
+  return !(detectorEnd < particleCurrPos || particleEnd < detectorCurrPos);
 }
 
 function isParticleDetected(
   detectorCurrPos,
   detectorThikness,
-  perticle1CurrPos,
-  perticle1Thikness,
-  perticle2CurrPos,
-  perticle2Thikness,
+  particle1CurrPos,
+  particle1Thikness,
+  particle2CurrPos,
+  particle2Thikness,
 ) {
   return (
     isOverlapping(
       detectorCurrPos,
       detectorThikness,
-      perticle1CurrPos,
-      perticle1Thikness,
+      particle1CurrPos,
+      particle1Thikness,
     ) ||
     isOverlapping(
       detectorCurrPos,
       detectorThikness,
-      perticle2CurrPos,
-      perticle2Thikness,
+      particle2CurrPos,
+      particle2Thikness,
     )
   );
 }
@@ -166,7 +166,7 @@ function update() {
     p3.height,
   );
 
-  // Updating Color On Perticle Detect
+  // Updating Color On particle Detect
   d1.color = detector.getDetectorColor(d1.isDetected);
   d2.color = detector.getDetectorColor(d2.isDetected);
   d3.color = detector.getDetectorColor(d3.isDetected);
