@@ -10,17 +10,16 @@ function getDetectorColor(isDetected) {
   return isDetected ? r.RED : r.WHITE;
 }
 
-function init(posX, posY, w, h, c, startB, endB, velo) {
-  const currX = posX;
-  const currY = posY;
-  const width = w;
-  const height = h;
-  const color = c;
-  const startBound = startB;
-  const endBound = endB;
-  const velocity = velo;
-  const isDetected = false;
-
+function init(
+  currX,
+  currY,
+  width,
+  height,
+  color,
+  startBound,
+  endBound,
+  velocity,
+) {
   return {
     currX,
     currY,
@@ -30,7 +29,7 @@ function init(posX, posY, w, h, c, startB, endB, velo) {
     startBound,
     endBound,
     velocity,
-    isDetected,
+    isDetected: false,
   };
 }
 
